@@ -28,7 +28,7 @@
             "filename":"../../deploy-image/deploy-image.md"
         },
         {
-            "title": "Lab 4: Create and Enable a Graph User in SQLDeveloper Web",
+            "title": "Lab 4: Create and Enable a Graph User",
             "description":"Create a user and enable SQLDeveloper Web for that user",
             "filename":"../../create-graph-user/create-graph-user.md"
         },

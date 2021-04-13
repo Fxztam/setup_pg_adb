@@ -90,7 +90,7 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
 
 7. To connect to the instance, go the environment where you generated your SSH Key. You can use `Oracle Cloud Shell`, `Terminal` if you are using MAC, or `Gitbash` if you are using Windows. On your terminal or gitbash enter the following command:
 
-    *Note: For Oracle Linux VMs, the default username is **opc***
+    **Note:** For Oracle Linux VMs, the default username is `opc`
 
     If your SSH Keys are kept under `HOME/.ssh/` directory, run:
     ```
@@ -103,10 +103,6 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
     <copy>ssh -i <path_to_private_ssh_key> opc@<public_ip_address></copy>
     ```
 
-    ![](images/ssh_first_time.png)
-
-    *Note: You should remove angle brackets <> from your code.*
-
 ## **STEP 2:** Upload ADB Wallet, Configure your Compute Instance.
 
 The steps are as follows:
@@ -115,111 +111,107 @@ The steps are as follows:
   - Create the `wallets` directory. Unzip the ADB wallet into that directory.
   - Change the permissions on the wallets directory so that the user `oraclegraph` and members of the group `oraclegraph` have access to that directory.
 
-1. SSH into the compute instance using the private key you created earlier. First navigate to the folder where you created your SSH Keys. And connect using:
+SSH into the compute instance using the private key you created earlier. First navigate to the folder where you created your SSH Keys. And connect using:
 
-    ```
-    <copy>ssh -i <private_key> opc@<public_ip_for_compute></copy>
-    ```
-    *Note: You should not include the angle brackets <> in you code.*
+```
+<copy>ssh -i <private_key> opc@<public_ip_for_compute></copy>
+```
 
-2.  Download your ADB Wallet if you haven't done so. Go to your Cloud console, under **Database**, select **Autonomous Transaction Processing**. If you don't see your instance, make sure the **Workload Type** is **Transaction Processing** or **All**.
+Download your ADB Wallet if you haven't done so. Go to your Cloud console, under **Database**, select **Autonomous Transaction Processing**. If you don't see your instance, make sure the **Workload Type** is **Transaction Processing** or **All**.
 
-    ![](images/console_atp.png)
+![](images/console_atp.png)
 
-    Click on your Autonomous Database instance. In your Autonomous Database Details page, click **DB Connection**.
+Click on your Autonomous Database instance. In your Autonomous Database Details page, click **DB Connection**.
 
-    ![](images/DB_connection.png)
+![](images/db_connection.jpg)
 
-    In Database Connection window, select **Instance Wallet** as your Wallet Type, click **Download Wallet**.
-    ![](images/wallet_type.png)
+In Database Connection window, select **Instance Wallet** as your Wallet Type, click **Download Wallet**.
+![](images/wallet_type.jpg)
 
-    In the Download Wallet dialog, enter a wallet password in the Password field and confirm the password in the Confirm Password field.
-    The password must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character. This password protects the downloaded Client Credentials wallet.
+In the Download Wallet dialog, enter a wallet password in the Password field and confirm the password in the Confirm Password field. The password must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character. This password protects the downloaded Client Credentials wallet.
 
-    Click **Download** to save the client security credentials zip file.
-    ![](images/password.png)
+Click **Download** to save the client security credentials zip file.
+![](images/password.jpg)
 
-    By default the filename is: Wallet_databasename.zip. You can save this file as any filename you want.
-    You must protect this file to prevent unauthorized database access.
-    ![](images/wallet_name.png)
+By default the filename is `Wallet_<DATABASE_NAME>.zip` e.g. `Wallet_ATPGRAPH.zip`. You must protect this file to prevent unauthorized database access.
 
-    Content in this section is adapted from [Download Client Credentials (Wallets)](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/connect-download-wallet.html#GUID-B06202D2-0597-41AA-9481-3B174F75D4B1)
+Content in this section is adapted from [Download Client Credentials (Wallets)](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/connect-download-wallet.html#GUID-B06202D2-0597-41AA-9481-3B174F75D4B1)
 
 ## **STEP 3:**  Copy ADB Wallet to the Linux Compute
 
-1. On your desktop or laptop (i.e. your machine), we'll assume the ADB wallet was downloaded to ~/Downloads.
+On your desktop or laptop, we'll assume the ADB wallet was downloaded to ~/Downloads.
 
-    Open a new Terminal, navigate to the folder where you created your SSH Keys, and enter the following command:
+Open a new Terminal, navigate to the folder where you created your SSH Keys, and enter the following command:
 
-    ```
-    <copy>
-    scp -i <private_key> ~/Downloads/<ADB_Wallet>.zip opc@<public_ip_for_compute>:/etc/oracle/graph/wallets
-    </copy>
-    ```
+```
+<copy>
+scp -i <private_key> ~/Downloads/<ADB_Wallet>.zip opc@<public_ip_for_compute>:/etc/oracle/graph/wallets
+</copy>
+```
 
-    Example:
-    ```
-    scp -i key.pem ~/Downloads/Wallet_ATPGRAPH.zip opc@203.0.113.14:/etc/oracle/graph/wallets
-    ```
+Example:
+```
+scp -i key.pem ~/Downloads/Wallet_ATPGRAPH.zip opc@203.0.113.14:/etc/oracle/graph/wallets
+```
 
 ## **STEP 4:** Unzip ADB Wallet
 
-1.  Now connect to the compute instance (via SSH) as `opc` user.
+Now connect to the compute instance (via SSH) as `opc` user.
 
-    ```
-    scp -i <private_key> opc@<public_ip_for_compute>
-    ```
+```
+scp -i <private_key> opc@<public_ip_for_compute>
+```
 
-    Example:
-    ```
-    scp -i key.pem opc@203.0.113.14
-    ```
+Example:
+```
+scp -i key.pem opc@203.0.113.14
+```
 
-    Unzip the ADB wallet to the `/etc/oracle/graph/wallets/` directory.
+Unzip the ADB wallet to the `/etc/oracle/graph/wallets/` directory.
 
-    ```
-    <copy>
-    cd /etc/oracle/graph/wallets/
-    unzip Wallet_ATPGRAPH.zip
-    chgrp oraclegraph *
-    </copy>
-    ```
+```
+<copy>
+cd /etc/oracle/graph/wallets/
+unzip Wallet_ATPGRAPH.zip
+chgrp oraclegraph *
+</copy>
+```
 
-    The above is just one way of achieving the desired result, i.e. giving the `oraclegraph` user access to the ADB wallet. There are alternative methods.
+The above is just one way of achieving the desired result, i.e. giving the `oraclegraph` user access to the ADB wallet. There are alternative methods.
 
-2. Check that you used the right service name in the JDBC URL you entered when configuring the OCI stack. It can be updated if necessary.
+Check that you used the right service name in the JDBC URL you entered when configuring the OCI stack. It can be updated if necessary.
 
-    ```
-    <copy>cat /etc/oracle/graph/wallets/tnsnames.ora</copy>
-    ```
+```
+<copy>cat /etc/oracle/graph/wallets/tnsnames.ora</copy>
+```
 
-    You will see something similar to:
-    ``` 
-    atpgraph_low =
-        (description=
-            (address=
-                (https_proxy=proxyhostname)(https_proxy_port=80)(protocol=tcps)(port=1521)
-                (host=adwc.example.oraclecloud.com)
-            )
-            (connect_data=(service_name=adwc1_low.adwc.oraclecloud.com))
-            (security=(ssl_server_cert_dn="adwc.example.oraclecloud.com,OU=Oracle BMCS US,O=Oracle Corporation,L=Redwood City,ST=California,C=US"))
-    )
-    ```
+You will see something similar to:
+``` 
+atpgraph_low =
+    (description=
+        (address=
+            (https_proxy=proxyhostname)(https_proxy_port=80)(protocol=tcps)(port=1521)
+            (host=adwc.example.oraclecloud.com)
+        )
+        (connect_data=(service_name=adwc1_low.adwc.oraclecloud.com))
+        (security=(ssl_server_cert_dn="adwc.example.oraclecloud.com,OU=Oracle BMCS US,O=Oracle Corporation,L=Redwood City,ST=California,C=US"))
+)
+```
 
-    An entry in tnsnames.ora is of the form:
-    ```
-    <addressname> =  
-        (DESCRIPTION =  
-            (ADDRESS_LIST =  
-                (ADDRESS = (PROTOCOL = TCP)(Host = <hostname>)(Port = <port>))
-            )
-            (CONNECT_DATA =
-                (SERVICE_NAME = <service_name>)
-            )
-    )
-    ```
+An entry in tnsnames.ora is of the form:
+```
+<addressname> =  
+    (DESCRIPTION =  
+        (ADDRESS_LIST =  
+            (ADDRESS = (PROTOCOL = TCP)(Host = <hostname>)(Port = <port>))
+        )
+        (CONNECT_DATA =
+            (SERVICE_NAME = <service_name>)
+        )
+)
+```
 
-    Note the `addressname`, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
+Note the `addressname`, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
 
 You may now proceed to the next lab.
 
@@ -227,4 +219,4 @@ You may now proceed to the next lab.
 
 * **Author** - Jayant Sharma, Product Manager, Spatial and Graph
 * **Contributors** - Thanks to Jenny Tsai for helpful, constructive feedback that improved this workshop. Arabella Yao, Product Manager Intern, Database Management.
-* **Last Updated By/Date** - Ryota Yamanaka, January 2021
+* **Last Updated By/Date** - Ryota Yamanaka, April 2021

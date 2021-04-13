@@ -46,13 +46,13 @@ Watch a video demonstration of provisioning an autonomous database in Autonomous
 
 6. You can see your current default **region** in the top, right hand corner of the page. You can select a different region. If you want to create an Always Free ADB, go ahead and select a region where Always Free Resources are available.
 
-    ![](images/Region.png)
+    ![](images/Region.jpg)
 
 ## **STEP 2**: Creating the ADB instance
 
 1. Click **Create Autonomous Database** to start the instance creation process.
 
-    ![](images/Picture100-23.png)
+    ![](images/create_adb.jpg)
 
 2.  This brings up the **Create Autonomous Database** screen where you will specify the configuration of the instance.
 

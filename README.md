@@ -16,11 +16,11 @@ Estimated Workshop Time: 30 min
 
     **Note:** You can also directly access your Autonomous Data Warehouse or Autonomous Transaction Processing service in the **Quick Actions** section of the dashboard.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Picture100-36.png)
+    ![](livelabs/provision-free-tier-adb/images/Picture100-36.png)
 
 3. The following steps apply similarly to either Autonomous Data Warehouse or Autonomous Transaction Processing. This lab shows provisioning of an Autonomous Transaction Processing (ATP) database, so click **Autonomous Transaction Processing**.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/select_ATP.png)
+    ![](livelabs/provision-free-tier-adb/images/select_ATP.png)
 
 4. Make sure your Workload Type is **Transaction Processing** or **All** to see your Autonomous Transaction Processing instances. You can use the **List Scope** drop-down menu to select a Compartment. Select your **root compartment**, or **another compartment of your choice** where you will create your new ATP instance. If you want to create a new compartment or learn more about them, click [here](https://docs.cloud.oracle.com/iaas/Content/Identity/Tasks/managingcompartments.htm#three).
 
@@ -28,17 +28,17 @@ Estimated Workshop Time: 30 min
 
 5. This console shows that no databases yet exist. If there were a long list of databases, you could filter the list by the **State** of the databases (Available, Stopped, Terminated, and so on). You can also sort by **Workload Type**. Here, the **Transaction Processing** workload type is selected.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Compartment.png)
+    ![](livelabs/provision-free-tier-adb/images/Compartment.png)
 
 6. You can see your current default **region** in the top, right hand corner of the page. You can select a different region. If you want to create an Always Free ADB, go ahead and select a region where Always Free Resources are available.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Region.jpg)
+    ![](livelabs/provision-free-tier-adb/images/Region.jpg)
 
 ## **STEP 2**: Creating the ADB instance
 
 1. Click **Create Autonomous Database** to start the instance creation process.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/create_adb.jpg)
+    ![](livelabs/provision-free-tier-adb/images/create_adb.jpg)
 
 2. This brings up the **Create Autonomous Database** screen where you will specify the configuration of the instance.
 
@@ -53,14 +53,14 @@ Estimated Workshop Time: 30 min
     - **Transaction Processing** - For this lab, choose **Transaction Processing** as the workload type.
     - **Data Warehouse** - Alternately, you could have chosen Data Warehouse as the workload type.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/basic_info_workload_type.jpg)
+    ![](livelabs/provision-free-tier-adb/images/basic_info_workload_type.jpg)
 
 5. Choose a deployment type. Select the deployment type for your database from the choices:
 
     - **Shared Infrastructure** - For this lab, choose **Shared Infrastructure** as the deployment type.
     - **Dedicated Infrastructure** - Alternately, you could have chosen Dedicated Infrastructure as the workload type.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Picture100-26_deployment_type.png)
+    ![](livelabs/provision-free-tier-adb/images/Picture100-26_deployment_type.png)
 
 6. Configure the database, select the **Always Free** option:
 
@@ -71,7 +71,7 @@ Estimated Workshop Time: 30 min
     - **Auto scaling** - For this lab, keep auto scaling should be **disabled**.
     - **New Database Preview** - If a checkbox is available to preview a new database version, do **not** select it.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/atp-choose-cpu-storage.jpg)
+    ![](livelabs/provision-free-tier-adb/images/atp-choose-cpu-storage.jpg)
 
 7. Create administrator credentials:
 
@@ -83,14 +83,14 @@ Estimated Workshop Time: 30 min
     - The password must not be the same password that is set less than 24 hours ago.
     - Re-enter the password to confirm it. Make a note of this password.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Picture100-26d.png)
+    ![](livelabs/provision-free-tier-adb/images/Picture100-26d.png)
 
 8. Choose network access:
     - For this lab, accept the default, "Allow secure access from everywhere".
     - If you want a private endpoint, to allow traffic only from the VCN you specify - where access to the database from all public IPs or VCNs is blocked, then select "Virtual cloud network" in the Choose network access area.
     - You can control and restrict access to your Autonomous Database by setting network access control lists (ACLs). You can select from 4 IP notation types: IP Address, CIDR Block, Virtual Cloud Network, Virtual Cloud Network OCID.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Picture100-26e.png)
+    ![](livelabs/provision-free-tier-adb/images/Picture100-26e.png)
 
 9. Choose a license type. For this lab, choose **License Included**. The two license types are:
 
@@ -99,11 +99,11 @@ Estimated Workshop Time: 30 min
 
 10. Click **Create Autonomous Database**.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Picture100-27.png)
+    ![](livelabs/provision-free-tier-adb/images/Picture100-27.png)
 
 11.  Your instance will begin provisioning. In a few minutes the state will turn from Provisioning to Available. At this point, your Autonomous Transaction Processing database is ready to use! Have a look at your instance's details here including its Name, Database Version, OCPU Count and Storage size.
-    ![](livelabs/21.1/provision-free-tier-adb/images/atp-graph-provisioning.png)
-    ![](livelabs/21.1/provision-free-tier-adb/images/atp-graph-available.png)
+    ![](livelabs/provision-free-tier-adb/images/atp-graph-provisioning.png)
+    ![](livelabs/provision-free-tier-adb/images/atp-graph-available.png)
 
 # Deploy the Graph Server and Client Marketplace Image
 
@@ -116,11 +116,11 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
 
 1. Go to your Cloud Console. Navigate to the **Marketplace** tab and enter "Graph Server and Client" in the serach bar. Click on the Oracle Graph Server and Client stack.
 
-    ![](livelabs/21.1/deploy-image/images/OCIMarketplaceFindGraphServer.jpg)
+    ![](livelabs/deploy-image/images/OCIMarketplaceFindGraphServer.jpg)
 
 2. Select the stack and then review the System Requirements and Usage Instructions. Then select the latest version and choose a compartment and click on `Launch Stack`.
 
-    ![](livelabs/21.1/deploy-image/images/GSC211LaunchStack.jpg)
+    ![](livelabs/deploy-image/images/GSC211LaunchStack.jpg)
 
 3. Most of the defaults are perfect for our purposes. However, you will need to choose, or provide the following:
 
@@ -132,20 +132,20 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
 
     **Note:** This JDBC URL is stored in a configuration which can be updated later if necessary.
 
-    ![](livelabs/21.1/deploy-image/images/ConfigureStackVariables_211_1.jpg)
-    ![](livelabs/21.1/deploy-image/images/ConfigureStackVariables_211_2.jpg)
+    ![](livelabs/deploy-image/images/ConfigureStackVariables_211_1.jpg)
+    ![](livelabs/deploy-image/images/ConfigureStackVariables_211_2.jpg)
 
 4. Click `Next` to initiate the Resource Manager Job for the stack. The job will take 2-3 minutes to complete.
 
-    ![](livelabs/21.1/deploy-image/images/ResourceMgrStackJobStart.png)
+    ![](livelabs/deploy-image/images/ResourceMgrStackJobStart.png)
 
     You'll see the progress in the log output.
 
-    ![](livelabs/21.1/deploy-image/images/RMJobStarted_Sombrero203.png)
+    ![](livelabs/deploy-image/images/RMJobStarted_Sombrero203.png)
 
     Once the job has successfully completed the status will change from "In Progess" to "Succeeded".
 
-    ![](livelabs/21.1/deploy-image/images/RMJobCompleted_211.jpg)
+    ![](livelabs/deploy-image/images/RMJobCompleted_211.jpg)
 
     **Note:** On completion please make a note of `public_ip` and `graphviz_public_url`, so that you can SSH into the running instance and access the graph viz later in this lab.
 
@@ -158,7 +158,7 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
     ![Click on the VCN](https://oracle.github.io/learning-library/oci-library/L100-LAB/Compute_Services/media/vcn1.png)
 
     Then click on the VCN you created for this lab
-    ![](livelabs/21.1/deploy-image/images/vcn_instance.png)
+    ![](livelabs/deploy-image/images/vcn_instance.png)
 
     Now click on **Security Lists** on the left navigation bar for the VCN.
 
@@ -176,7 +176,7 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
     
     Click on **Add Ingress Rules** at the bottom.
 
-    ![](livelabs/21.1/deploy-image/images/ingress_rule_7007.jpg)
+    ![](livelabs/deploy-image/images/ingress_rule_7007.jpg)
 
 7. To connect to the instance, go the environment where you generated your SSH Key. On your terminal enter the following command:
 
@@ -202,21 +202,21 @@ ssh -i <private_key> opc@<public_ip_for_compute>
 
 Download your ADB Wallet if you haven't done so. Go to your Cloud console, under **Database**, select **Autonomous Transaction Processing**. If you don't see your instance, make sure the **Workload Type** is **Transaction Processing** or **All**.
 
-![](livelabs/21.1/deploy-image/images/console_atp.png)
+![](livelabs/deploy-image/images/console_atp.png)
 
 Click on your Autonomous Database instance. In your Autonomous Database Details page, click **DB Connection**.
 
-![](livelabs/21.1/deploy-image/images/db_connection.jpg)
+![](livelabs/deploy-image/images/db_connection.jpg)
 
 In Database Connection window, select **Instance Wallet** as your Wallet Type, click **Download Wallet**.
 
-![](livelabs/21.1/deploy-image/images/wallet_type.jpg)
+![](livelabs/deploy-image/images/wallet_type.jpg)
 
 In the Download Wallet dialog, enter a wallet password in the Password field and confirm the password in the Confirm Password field. The password must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character. This password protects the downloaded Client Credentials wallet.
 
 Click **Download** to save the client security credentials zip file.
 
-![](livelabs/21.1/deploy-image/images/password.jpg)
+![](livelabs/deploy-image/images/password.jpg)
 
 By default the filename is `Wallet_<DATABASE_NAME>.zip` e.g. `Wallet_ATPGRAPH.zip`. You must protect this file to prevent unauthorized database access.
 
@@ -292,33 +292,34 @@ Login as the ADMIN user in SQL Developer Web of the newly created ADB instance.
 
 Go to your Cloud Console, click **Autonomous Transaction Processing**. Select the ADB instance `ATP Graph` you created in the previous section.
 
-![](livelabs/21.1/create-graph-user/images/select_ATP.png)
+![](livelabs/create-graph-user/images/select_ATP.png)
 
 In Autonomous Database Details page, click **Service Console**. Make sure your brower allow pop-up windows.
 
-![](livelabs/21.1/create-graph-user/images/adb_console_1.jpg)
+![](livelabs/create-graph-user/images/adb_console_1.jpg)
 
 Choose Development from the list on the left, then click the **Database Actions**.
 
-![](livelabs/21.1/create-graph-user/images/adb_console_2.jpg)
+![](livelabs/create-graph-user/images/adb_console_2.jpg)
 
 Enter `ADMIN` as Username and go next.
 
-![](livelabs/21.1/create-graph-user/images/login-1.jpg)
+![](livelabs/create-graph-user/images/login-1.jpg)
 
 Input the password (you set up at Lab 2 Step 2, Section 7) and sign in.
 
-![](livelabs/21.1/create-graph-user/images/login-2.jpg)
+![](livelabs/create-graph-user/images/login-2.jpg)
 
 Logged in as the `ADMIN` user. 
 
-![](livelabs/21.1/create-graph-user/images/ADB_SQLDevWebHome.jpg)
+![](livelabs/create-graph-user/images/ADB_SQLDevWebHome.jpg)
 
 ## **STEP 2:** Create the roles required
 
 Now create the roles required for the graph feature. Enter the following commands into the SQL Worksheet and run it while connected as the ADMIN user.
 
 Create the roles required by the graph server.
+
 ```sql
 DECLARE
   PRAGMA AUTONOMOUS_TRANSACTION;
@@ -391,7 +392,7 @@ GRANT create session, create table, create view TO graph_dev;
 GRANT graph_developer TO graph_dev;
 ```
 
-![](livelabs/21.1/create-graph-user/images/create_user.jpg)
+![](livelabs/create-graph-user/images/create_user.jpg)
 
 Notes:
 - The `IDENTIFIED BY` clause specifies the password (i.e whatever you replaced <specify_a_password> with)
@@ -403,11 +404,11 @@ Open the GraphViz at `https://<public_ip_for_compute>:7007/ui`. Replace `<public
 
 You should see a screen similar to the screenshot below. Enter the username (`graph_dev`) and password you entered when createing the user in SQL Developer Web.
 
-![](livelabs/21.1/create-graph-user/images/graphviz_1.jpg)
+![](livelabs/create-graph-user/images/graphviz_1.jpg)
 
 If you can login successfully, your Graph Server is properly connected to the database for authentication. Now, you will see that a sample graph called `hr` is already loaded. Try running the simple PGQL query shown by default against the graph.
 
-![](livelabs/21.1/create-graph-user/images/graphviz_2.jpg)
+![](livelabs/create-graph-user/images/graphviz_2.jpg)
 
 Congraturation, your Graph Server is ready!
 
