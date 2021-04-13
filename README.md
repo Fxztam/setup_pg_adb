@@ -2,7 +2,6 @@
 
 # Introduction
 
-
 The labs in this workshop walk you through the steps to deploy the Graph Server and Client package with Autonomous Database (ADB) instance. You will provision a new ADB instance, and integrate with the Graph Server using its Marketplace image.
 
 Estimated Workshop Time: 30 min
@@ -33,13 +32,13 @@ Estimated Workshop Time: 30 min
 
 6. You can see your current default **region** in the top, right hand corner of the page. You can select a different region. If you want to create an Always Free ADB, go ahead and select a region where Always Free Resources are available.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Region.png)
+    ![](livelabs/21.1/provision-free-tier-adb/images/Region.jpg)
 
 ## **STEP 2**: Creating the ADB instance
 
 1. Click **Create Autonomous Database** to start the instance creation process.
 
-    ![](livelabs/21.1/provision-free-tier-adb/images/Picture100-23.png)
+    ![](livelabs/21.1/provision-free-tier-adb/images/create_adb.jpg)
 
 2. This brings up the **Create Autonomous Database** screen where you will specify the configuration of the instance.
 
@@ -106,23 +105,202 @@ Estimated Workshop Time: 30 min
     ![](livelabs/21.1/provision-free-tier-adb/images/atp-graph-provisioning.png)
     ![](livelabs/21.1/provision-free-tier-adb/images/atp-graph-available.png)
 
-# Create and Enable a Database User in SQL Developer Web
+# Deploy the Graph Server and Client Marketplace Image
+
+## **STEP 1:** Locate the Graph Server and Client in the Oracle Cloud Marketplace
+
+Oracle Cloud Marketplace is an online platform which offers Oracle and partner software as click-to-deploy solutions that
+are built to extend Oracle Cloud products and services.
+
+Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a fully automated end-to-end deployment of a partner solution on Oracle Cloud Infrastructure.
+
+1. Go to your Cloud Console. Navigate to the **Marketplace** tab and enter "Graph Server and Client" in the serach bar. Click on the Oracle Graph Server and Client stack.
+
+    ![](livelabs/21.1/deploy-image/images/OCIMarketplaceFindGraphServer.jpg)
+
+2. Select the stack and then review the System Requirements and Usage Instructions. Then select the latest version and choose a compartment and click on `Launch Stack`.
+
+    ![](livelabs/21.1/deploy-image/images/GSC211LaunchStack.jpg)
+
+3. Most of the defaults are perfect for our purposes. However, you will need to choose, or provide the following:
+
+    - Select a VM shape. Choose an Always Free eligible shape (i.e. `VM.Standard.E2.1.Micro`).
+    - Paste your public SSH key. This is used when you ssh into the provisioned compute later.
+    - Choose an existing virtual cloud network.
+    - Select a subnet compartment and subnet.
+    - Enter the JDBC URL for the ADB instance. The TNS_ADMIN entry points to the directory where you will have uploaded and unzipped the wallet, e.g. `jdbc:oracle:thin:@atpgraph_low?TNS_ADMIN=/etc/oracle/graph/wallets`
+
+    **Note:** This JDBC URL is stored in a configuration which can be updated later if necessary.
+
+    ![](livelabs/21.1/deploy-image/images/ConfigureStackVariables_211_1.jpg)
+    ![](livelabs/21.1/deploy-image/images/ConfigureStackVariables_211_2.jpg)
+
+4. Click `Next` to initiate the Resource Manager Job for the stack. The job will take 2-3 minutes to complete.
+
+    ![](livelabs/21.1/deploy-image/images/ResourceMgrStackJobStart.png)
+
+    You'll see the progress in the log output.
+
+    ![](livelabs/21.1/deploy-image/images/RMJobStarted_Sombrero203.png)
+
+    Once the job has successfully completed the status will change from "In Progess" to "Succeeded".
+
+    ![](livelabs/21.1/deploy-image/images/RMJobCompleted_211.jpg)
+
+    **Note:** On completion please make a note of `public_ip` and `graphviz_public_url`, so that you can SSH into the running instance and access the graph viz later in this lab.
+
+5. The next set of steps are post-install setup and configuration on the newly created compute where the Graph Server was deployed.
+
+6. Add an Ingress Rule for port 7007 (needed later for the Graph Server).
+
+    Using the menu, under **Networking**, click on **Virtual Cloud Networks**.
+
+    ![Click on the VCN](https://oracle.github.io/learning-library/oci-library/L100-LAB/Compute_Services/media/vcn1.png)
+
+    Then click on the VCN you created for this lab
+    ![](livelabs/21.1/deploy-image/images/vcn_instance.png)
+
+    Now click on **Security Lists** on the left navigation bar for the VCN.
+
+    ![Click on Security Lists](https://oracle.github.io/learning-library/oci-library/L100-LAB/Compute_Services/media/vcn2.png)
+
+    Click on the **Default Security List** link.
+
+    Here you need to open port 7007. Click on **Add Ingress Rules** and add the following values as shown below:
+
+    - **Source Type:** CIDR
+    - **Source CIDR:** 0.0.0.0/0 (This setting is for testing only. Please replace to the IP address of the client machines for actual use.)
+    - **IP Protocol:** TCP
+    - **Source Port Range:** All
+    - **Destination Port Range:** 7007
+    
+    Click on **Add Ingress Rules** at the bottom.
+
+    ![](livelabs/21.1/deploy-image/images/ingress_rule_7007.jpg)
+
+7. To connect to the instance, go the environment where you generated your SSH Key. On your terminal enter the following command:
+
+    **Note:** For Oracle Linux VMs, the default username is `opc`
+
+    ```
+    ssh -i <private_key> opc@<public_ip_address>
+    ```
+
+## **STEP 2:** Upload ADB Wallet
+
+The steps are as follows:
+
+- Copy the ADB wallet zip file into the compute instance.
+- Create the `wallets` directory. Unzip the ADB wallet into that directory.
+- Change the permissions on the wallets directory so that the user `oraclegraph` and members of the group `oraclegraph` have access to that directory.
+
+SSH into the compute instance using the private key you created earlier. First navigate to the folder where you created your SSH Keys. And connect using:
+
+```
+ssh -i <private_key> opc@<public_ip_for_compute>
+```
+
+Download your ADB Wallet if you haven't done so. Go to your Cloud console, under **Database**, select **Autonomous Transaction Processing**. If you don't see your instance, make sure the **Workload Type** is **Transaction Processing** or **All**.
+
+![](livelabs/21.1/deploy-image/images/console_atp.png)
+
+Click on your Autonomous Database instance. In your Autonomous Database Details page, click **DB Connection**.
+
+![](livelabs/21.1/deploy-image/images/db_connection.jpg)
+
+In Database Connection window, select **Instance Wallet** as your Wallet Type, click **Download Wallet**.
+
+![](livelabs/21.1/deploy-image/images/wallet_type.jpg)
+
+In the Download Wallet dialog, enter a wallet password in the Password field and confirm the password in the Confirm Password field. The password must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character. This password protects the downloaded Client Credentials wallet.
+
+Click **Download** to save the client security credentials zip file.
+
+![](livelabs/21.1/deploy-image/images/password.jpg)
+
+By default the filename is `Wallet_<DATABASE_NAME>.zip` e.g. `Wallet_ATPGRAPH.zip`. You must protect this file to prevent unauthorized database access.
+
+Content in this section is adapted from [Download Client Credentials (Wallets)](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/connect-download-wallet.html#GUID-B06202D2-0597-41AA-9481-3B174F75D4B1)
+
+## **STEP 3:**  Copy ADB Wallet to the Linux Compute
+
+On your desktop or laptop, we'll assume the ADB wallet was downloaded to ~/Downloads.
+
+Open a new Terminal, navigate to the folder where you created your SSH Keys, and enter the following command:
+
+```
+scp -i <private_key> ~/Downloads/<ADB_Wallet>.zip opc@<public_ip_for_compute>:/etc/oracle/graph/wallets
+```
+
+Example:
+
+```
+scp -i key.pem ~/Downloads/Wallet_ATPGRAPH.zip opc@203.0.113.14:/etc/oracle/graph/wallets
+```
+
+## **STEP 4:** Unzip ADB Wallet
+
+Now connect to the compute instance (via SSH) as `opc` user.
+
+```
+ssh -i <private_key> opc@<public_ip_for_compute>
+```
+
+Example:
+
+```
+ssh -i key.pem opc@203.0.113.14
+```
+
+Unzip the ADB wallet to the `/etc/oracle/graph/wallets/` directory.
+
+```
+cd /etc/oracle/graph/wallets/
+unzip Wallet_ATPGRAPH.zip
+chgrp oraclegraph *
+```
+
+The above is just one way of achieving the desired result, i.e. giving the `oraclegraph` user access to the ADB wallet. There are alternative methods.
+
+Check that you used the right service name in the JDBC URL you entered when configuring the OCI stack. It can be updated if necessary.
+
+```
+cat /etc/oracle/graph/wallets/tnsnames.ora
+```
+
+You will see something similar to:
+
+```
+atpgraph_low =
+    (description=
+        (address=
+            (https_proxy=proxyhostname)(https_proxy_port=80)(protocol=tcps)(port=1521)
+            (host=adwc.example.oraclecloud.com)
+        )
+        (connect_data=(service_name=adwc1_low.adwc.oraclecloud.com))
+        (security=(ssl_server_cert_dn="adwc.example.oraclecloud.com,OU=Oracle BMCS US,O=Oracle Corporation,L=Redwood City,ST=California,C=US"))
+)
+```
+
+Note the address name, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
+
+# Create and Enable a Database User
 
 ## **STEP 1:** Login as the ADMIN user
 
 Login as the ADMIN user in SQL Developer Web of the newly created ADB instance.
 
-Go to your Cloud Console, click **Autonomous Transaction Processing**. Select the ADB instance **ATP Graph** you created in Lab 2.
+Go to your Cloud Console, click **Autonomous Transaction Processing**. Select the ADB instance `ATP Graph` you created in the previous section.
 
 ![](livelabs/21.1/create-graph-user/images/select_ATP.png)
 
 In Autonomous Database Details page, click **Service Console**. Make sure your brower allow pop-up windows.
 
-![](livelabs/21.1/create-graph-user/images/adb-console.jpg)
+![](livelabs/21.1/create-graph-user/images/adb_console_1.jpg)
 
-Choose Development from the list on the left, then click the **SQL Developer Web**.
+Choose Development from the list on the left, then click the **Database Actions**.
 
-![](livelabs/21.1/create-graph-user/images/ADB_ConsoleDevTab.png)
+![](livelabs/21.1/create-graph-user/images/adb_console_2.jpg)
 
 Enter `ADMIN` as Username and go next.
 
@@ -142,7 +320,6 @@ Now create the roles required for the graph feature. Enter the following command
 
 Create the roles required by the graph server.
 ```sql
-<copy>
 DECLARE
   PRAGMA AUTONOMOUS_TRANSACTION;
   role_exists EXCEPTION;
@@ -179,12 +356,11 @@ EXCEPTION
     raise;
 END;
 /
-</copy>
 ```
 
 Assign the default permissions to the roles, `GRAPH_DEVELOPER` and `GRAPH_ADMINISTRATOR`, to group multiple permissions together.
+
 ```sql
-<copy>
 GRANT PGX_SESSION_CREATE TO GRAPH_ADMINISTRATOR;
 GRANT PGX_SERVER_GET_INFO TO GRAPH_ADMINISTRATOR;
 GRANT PGX_SERVER_MANAGE TO GRAPH_ADMINISTRATOR;
@@ -193,258 +369,46 @@ GRANT PGX_SESSION_NEW_GRAPH TO GRAPH_DEVELOPER;
 GRANT PGX_SESSION_GET_PUBLISHED_GRAPH TO GRAPH_DEVELOPER;
 GRANT PGX_SESSION_MODIFY_MODEL TO GRAPH_DEVELOPER;
 GRANT PGX_SESSION_READ_MODEL TO GRAPH_DEVELOPER;
-</copy>
 ```
 
 ## **STEP 3:** Create a database user
 
-Now create the `CUSTOMER_360` user. Enter the following commands into the SQL Worksheet and run it while connected as the Admin user.
+Now create the `GRAPH_DEV` user. Enter the following commands into the SQL Worksheet and run it while connected as the Admin user.
 
-Note: Replace **<specify_a_password>** with a valid password string after copying and pasting the text below but **before executing** it in SQL Developer Web.
+Note: Replace **<specify_a_password>** with a valid password string.
 
 ```sql
-CREATE USER customer_360 
+CREATE USER graph_dev 
 IDENTIFIED BY <specify_a_password> 
 DEFAULT TABLESPACE data 
 TEMPORARY TABLESPACE temp 
 QUOTA UNLIMITED ON data;
 
-GRANT create session, create table, create view TO customer_360;
+GRANT create session, create table, create view TO graph_dev;
 -- The following additional privileges are necessary for two-tier architecture (= PGQL-on-RDBMS)
 -- GRANT ALTER SESSION, CREATE PROCEDURE, CREATE TYPE, CREATE SEQUENCE, CREATE TRIGGER TO customer_360;
 
-GRANT graph_developer TO customer_360;
+GRANT graph_developer TO graph_dev;
 ```
 
-![](livelabs/21.1/create-graph-user/images/create-user.jpg)
+![](livelabs/21.1/create-graph-user/images/create_user.jpg)
 
 Notes:
-- *The `IDENTIFIED BY` clause specifies the password (i.e whatever you replaced <specify_a_password> with)*
-- *The Graph Server uses database authentication ([details](https://docs.oracle.com/en/database/oracle/oracle-database/20/spgdg/using-inmemory-analyst-oracle-database.html)). The user needs at least the graph_developer role.*
+- The `IDENTIFIED BY` clause specifies the password (i.e whatever you replaced <specify_a_password> with)
+- The Graph Server uses database authentication ([details](https://docs.oracle.com/en/database/oracle/oracle-database/20/spgdg/using-inmemory-analyst-oracle-database.html)). The user needs at least the graph_developer role.
 
-## **STEP 4:** Enable SQL Developer Web for the new user
-
-Now provide SQL Developer Web access for this user. See the [documentation](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/sql-developer-web.html#GUID-4B404CE3-C832-4089-B37A-ADE1036C7EEA) for details.
-
-Open the main menu and click "Database Users".
-
-![](livelabs/21.1/create-graph-user/images/database-users.jpg)
-
-Open the menu for the user and click "Enable REST".
-
-![](livelabs/21.1/create-graph-user/images/enable-rest-1.jpg)
-
-Click "REST Enable User" to apply the change.
-
-![](livelabs/21.1/create-graph-user/images/enable-rest-2.jpg)
-
-The URL for SQL Developer Web for the `CUSTOMER_360` user will have `customer_360` in place of `admin` in it. Save the URL for the next step.
-
-![](livelabs/21.1/create-graph-user/images/login-c360.jpg)
-
-For details, see the ["Provide SQL Developer Web Access to Database Users"](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/sql-developer-web.html#GUID-4B404CE3-C832-4089-B37A-ADE1036C7EEA) section in the documentation.
-
-# Deploy the Graph Server and Client Marketplace Image
-
-## **STEP 1:** Locate the Graph Server and Client in the Oracle Cloud Marketplace
-
-Oracle Cloud Marketplace is an online platform which offers Oracle and partner software as click-to-deploy solutions that
-are built to extend Oracle Cloud products and services.
-
-Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a fully automated end-to-end deployment of a partner solution on Oracle Cloud Infrastructure.
-
-1. Go to your Cloud Console. Navigate to the **Marketplace** tab and enter "Graph Server and Client" in the serach bar. Click on the Oracle Graph Server and Client stack.
-
-    ![](livelabs/21.1/deploy-image/images/OCIMarketplaceFindGraphServer.jpg)
-
-2. Select the stack and then review the System Requirements and Usage Instructions. Then select the latest version and choose a compartment and click on `Launch Stack`.
-
-    ![](livelabs/21.1/deploy-image/images/GSC211LaunchStack.jpg)
-
-3. Most of the defaults are perfect for our purposes. However, you will need to choose, or provide the following:
-    - Select a VM shape. Choose an Always Free eligible shape (i.e. `VM.Standard.E2.1.Micro`).
-    - Paste your public SSH key. This is used when you ssh into the provisioned compute later.
-    - Choose an existing virtual cloud network.
-    - Select a subnet compartment and subnet.
-    - Enter the JDBC URL for the ADB instance. The TNS_ADMIN entry points to the directory where you will have uploaded and unzipped the wallet, e.g. `jdbc:oracle:thin:@atpgraph_low?TNS_ADMIN=/etc/oracle/graph/wallets`
-
-    **Note:** This JDBC URL is stored in a configuration which can be updated later if necessary.
-
-    ![](livelabs/21.1/deploy-image/images/ConfigureStackVariables_211_1.jpg)
-    ![](livelabs/21.1/deploy-image/images/ConfigureStackVariables_211_2.jpg)
-
-4. Click `Next` to initiate the Resource Manager Job for the stack. The job will take 2-3 minutes to complete.
-
-    ![](livelabs/21.1/deploy-image/images/ResourceMgrStackJobStart.png)
-
-    You'll see the progress in the log output.
-
-    ![](livelabs/21.1/deploy-image/images/RMJobStarted_Sombrero203.png)
-
-    Once the job has successfully completed the status will change from "In Progess" to "Succeeded".
-
-    ![](livelabs/21.1/deploy-image/images/RMJobCompleted_211.jpg)
-
-    **Note:** *On completion please make a note of `public_ip` and `graphviz_public_url`, so that you can SSH into the running instance and access the graph viz later in this lab.*
-
-5. The next set of steps are post-install setup and configuration on the newly created compute where the Graph Server was deployed.
-
-6. Add an Ingress Rule for port 7007 (needed later for the Graph Server).
-
-    Using the menu, under **Networking**, click on **Virtual Cloud Networks**.
-
-    ![Click on the VCN](https://oracle.github.io/learning-library/oci-library/L100-LAB/Compute_Services/media/vcn1.png)
-
-    Then click on the VCN you created for this lab
-    ![](livelabs/21.1/deploy-image/images/vcn_instance.png)
-
-    Now click on **Security Lists** on the left navigation bar for the VCN.
-
-    ![Click on Security Lists](https://oracle.github.io/learning-library/oci-library/L100-LAB/Compute_Services/media/vcn2.png)
-
-    Click on the **Default Security List** link.
-
-    Here you need to open port 7007. Click on **Add Ingress Rules** and add the following values as shown below:
-
-    - **Source Type:** CIDR
-    - **Source CIDR:** 0.0.0.0/0 (This setting is for testing only. Please replace to the IP address of the client machines for actual use.)
-    - **IP Protocol:** TCP
-    - **Source Port Range:** All
-    - **Destination Port Range:** 7007
-    
-    Click on **Add Ingress Rules** at the bottom.
-
-    ![](livelabs/21.1/deploy-image/images/ingress_rule_7007.jpg)
-
-7. To connect to the instance, go the environment where you generated your SSH Key. On your terminal enter the following command:
-
-    **Note:** For Oracle Linux VMs, the default username is `opc`
-
-    ```
-    ssh -i <path_to_private_ssh_key> opc@<public_ip_address>
-    ```
-
-    ![](livelabs/21.1/deploy-image/images/ssh_first_time.png)
-
-## **STEP 2:** Upload ADB Wallet
-
-The steps are as follows:
-
-- Copy the ADB wallet zip file into the compute instance.
-- Create the `wallets` directory. Unzip the ADB wallet into that directory.
-- Change the permissions on the wallets directory so that the user `oraclegraph` and members of the group `oraclegraph` have access to that directory.
-
-SSH into the compute instance using the private key you created earlier. First navigate to the folder where you created your SSH Keys. And connect using:
-
-```
-ssh -i <private_key> opc@<public_ip_for_compute>
-```
-
-Download your ADB Wallet if you haven't done so. Go to your Cloud console, under **Database**, select **Autonomous Transaction Processing**. If you don't see your instance, make sure the **Workload Type** is **Transaction Processing** or **All**.
-
-![](livelabs/21.1/deploy-image/images/console_atp.png)
-
-Click on your Autonomous Database instance. In your Autonomous Database Details page, click **DB Connection**.
-
-![](livelabs/21.1/deploy-image/images/DB_connection.png)
-
-In Database Connection window, select **Instance Wallet** as your Wallet Type, click **Download Wallet**.
-![](images/wallet_type.png)
-
-In the Download Wallet dialog, enter a wallet password in the Password field and confirm the password in the Confirm Password field.
-The password must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character. This password protects the downloaded Client Credentials wallet.
-
-Click **Download** to save the client security credentials zip file.
-![](livelabs/21.1/deploy-image/images/password.png)
-
-By default the filename is: Wallet_databasename.zip. You can save this file as any filename you want.
-You must protect this file to prevent unauthorized database access.
-![](livelabs/21.1/deploy-image/images/wallet_name.png)
-
-Content in this section is adapted from [Download Client Credentials (Wallets)](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/connect-download-wallet.html#GUID-B06202D2-0597-41AA-9481-3B174F75D4B1)
-
-## **STEP 3:**  Copy ADB Wallet to the Linux Compute
-
-On your desktop or laptop (i.e. your machine), we'll assume the ADB wallet was downloaded to ~/Downloads.
-
-Open a new Terminal, navigate to the folder where you created your SSH Keys, and enter the following command:
-```
-scp -i <private_key> ~/Downloads/<ADB_Wallet>.zip opc@<public_ip_for_compute>:/etc/oracle/graph/wallets
-```
-
-Example:
-```
-scp -i key.pem ~/Downloads/Wallet_ATPGRAPH.zip opc@203.0.113.14:/etc/oracle/graph/wallets
-```
-
-## **STEP 4:** Unzip ADB Wallet
-
-Now connect to the compute instance (via SSH) as `opc` user.
-
-```shell
-ssh -i <private_key> opc@<public_ip_for_compute>
-```
-
-Example:
-```shell
-ssh -i key.pem opc@203.0.113.14
-```
-
-Unzip the ADB wallet to the `/etc/oracle/graph/wallets/` directory.
-
-```shell
-cd /etc/oracle/graph/wallets/
-unzip Wallet_ATPGRAPH.zip
-chgrp oraclegraph *
-```
-
-The above is just one way of achieving the desired result, i.e. giving the `oraclegraph` user access to the ADB wallet. There are alternative methods.
-
-Check that you used the right service name in the JDBC URL you entered when configuring the OCI stack. It can be updated if necessary.
-
-```shell
-cat /etc/oracle/graph/wallets/tnsnames.ora
-```
-
-You will see something similar to:
-```
-atpgraph_low =
-    (description=
-        (address=
-            (https_proxy=proxyhostname)(https_proxy_port=80)(protocol=tcps)(port=1521)
-            (host=adwc.example.oraclecloud.com)
-        )
-        (connect_data=(service_name=adwc1_low.adwc.oraclecloud.com))
-        (security=(ssl_server_cert_dn="adwc.example.oraclecloud.com,OU=Oracle BMCS US,O=Oracle Corporation,L=Redwood City,ST=California,C=US"))
-)
-```
-
-Note the address name, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
-
-## **STEP 1:** Setup
+## **STEP 4:** Connect to Graph Server
 
 Open the GraphViz at `https://<public_ip_for_compute>:7007/ui`. Replace `<public_ip_for_compute>` with the one for your Graph Server compute instance.
 
-You should see a screen similar to the screenshot below. Enter the username (`customer_360`) and password you entered when createing the user in SQL Developer Web.
+You should see a screen similar to the screenshot below. Enter the username (`graph_dev`) and password you entered when createing the user in SQL Developer Web.
 
-![](images/ADB_GViz_Login.png)
+![](livelabs/21.1/create-graph-user/images/graphviz_1.jpg)
 
-## **STEP 2:** Modify query
+If you can login successfully, your Graph Server is properly connected to the database for authentication. Now, you will see that a sample graph called `hr` is already loaded. Try running the simple PGQL query shown by default against the graph.
 
-Modify the query to get the first 5 rows, i.e. change `LIMIT 100` to `LIMIT 5`, and click Run.
+![](livelabs/21.1/create-graph-user/images/graphviz_2.jpg)
 
-You should see a graph similar to the screenshot below.
+Congraturation, your Graph Server is ready!
 
-![](images/show-5-elements.jpg)
-
-## **STEP 3:** Add highlights
-
-Now let's add some labels and other visual context. These are known as highlights. Click [here](https://objectstorage.us-ashburn-1.oraclecloud.com/p/wQFPfdrO-aGGUwxBXSQDX2DzjFueYlgUZ40YoXLrP6x0bqIZrgpSBpyHEo3Q-i33/n/c4u03/b/data-management-library-files/o/highlights.json.zip) to download a zip file, `highlights.json.zip`. Unzip this file and note where it is unzipped.
-
-Click on the Load button under Highlights (on the right side of the screen). Browse to the appropriate folder and choose the file and click Open to load that.
-
-![](images/GraphVizLoadHighlights.png)
-
-The graph should now look like
-
-![](images/GraphVizWithHighlights.png)
+This sample graph is pre-loaded only on memory, but the actual graphs should be loaded from database in real use cases. Please proceed to the use case workshops.
