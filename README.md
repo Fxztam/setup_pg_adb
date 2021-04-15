@@ -6,9 +6,9 @@ The labs in this workshop walk you through the steps to deploy the Graph Server 
 
 Estimated Workshop Time: 30 min
 
-- Setup ADB instance
-- Deploy the Graph Server and Client Marketplace Image
-- Create and Enable a Database User
+- [Setup ADB Instance](#Setup-ADB-Instance)
+- [Deploy Graph Server Marketplace Image](#Deploy-Graph-Server-Marketplace-Image)
+- [Create Database User](Create-Database-User)
 
 # Setup ADB instance
 
@@ -109,7 +109,7 @@ Estimated Workshop Time: 30 min
     ![](livelabs/provision-free-tier-adb/images/atp-graph-provisioning.png)
     ![](livelabs/provision-free-tier-adb/images/atp-graph-available.png)
 
-# Deploy the Graph Server and Client Marketplace Image
+# Deploy Graph Server Marketplace Image
 
 ## **STEP 1:** Launch Graph Server and Client in the Oracle Cloud Marketplace
 
@@ -285,7 +285,7 @@ atpgraph_low =
 
 Note the address name, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
 
-# Create and Enable a Database User
+# Create Database User
 
 ## **STEP 1:** Login as the ADMIN user
 
