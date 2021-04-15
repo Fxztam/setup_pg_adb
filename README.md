@@ -6,7 +6,11 @@ The labs in this workshop walk you through the steps to deploy the Graph Server 
 
 Estimated Workshop Time: 30 min
 
-# Provision Autonomous Database Shared Instance
+- Setup ADB instance
+- Deploy the Graph Server and Client Marketplace Image
+- Create and Enable a Database User
+
+# Setup ADB instance
 
 ## **STEP 1**: Choose ATP from the Services Menu
 
@@ -107,14 +111,11 @@ Estimated Workshop Time: 30 min
 
 # Deploy the Graph Server and Client Marketplace Image
 
-## **STEP 1:** Locate the Graph Server and Client in the Oracle Cloud Marketplace
+## **STEP 1:** Launch Graph Server and Client in the Oracle Cloud Marketplace
 
-Oracle Cloud Marketplace is an online platform which offers Oracle and partner software as click-to-deploy solutions that
-are built to extend Oracle Cloud products and services.
+Oracle Cloud Marketplace is an online platform which offers Oracle and partner software as click-to-deploy solutions that are built to extend Oracle Cloud products and services. Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a fully automated end-to-end deployment of a partner solution on Oracle Cloud Infrastructure.
 
-Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a fully automated end-to-end deployment of a partner solution on Oracle Cloud Infrastructure.
-
-1. Go to your Cloud Console. Navigate to the **Marketplace** tab and enter "Graph Server and Client" in the serach bar. Click on the Oracle Graph Server and Client stack.
+1. Go to your Cloud Console. Navigate to the **Marketplace** tab and enter "graph server and client" in the serach bar. Click on the Oracle Graph Server and Client stack.
 
     ![](livelabs/deploy-image/images/OCIMarketplaceFindGraphServer.jpg)
 
@@ -130,7 +131,7 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
     - Select a subnet compartment and subnet.
     - Enter the JDBC URL for the ADB instance. The TNS_ADMIN entry points to the directory where you will have uploaded and unzipped the wallet, e.g. `jdbc:oracle:thin:@atpgraph_low?TNS_ADMIN=/etc/oracle/graph/wallets`
 
-    **Note:** This JDBC URL is stored in a configuration which can be updated later if necessary.
+    **Note:** This JDBC URL is stored in a configuration file (`pgx.conf`) which can be updated later if necessary.
 
     ![](livelabs/deploy-image/images/ConfigureStackVariables_211_1.jpg)
     ![](livelabs/deploy-image/images/ConfigureStackVariables_211_2.jpg)
@@ -186,7 +187,7 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
     ssh -i <private_key> opc@<public_ip_address>
     ```
 
-## **STEP 2:** Upload ADB Wallet
+## **STEP 2:** Download ADB Wallet
 
 The steps are as follows:
 
@@ -386,8 +387,8 @@ TEMPORARY TABLESPACE temp
 QUOTA UNLIMITED ON data;
 
 GRANT create session, create table, create view TO graph_dev;
--- The following additional privileges are necessary for two-tier architecture (= PGQL-on-RDBMS)
--- GRANT ALTER SESSION, CREATE PROCEDURE, CREATE TYPE, CREATE SEQUENCE, CREATE TRIGGER TO customer_360;
+-- The following privileges are required for two-tier deployment (= PGQL-on-RDBMS)
+-- GRANT alter session, create procedure, create type, create sequence, create trigger TO graph_dev;
 
 GRANT graph_developer TO graph_dev;
 ```
