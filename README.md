@@ -102,7 +102,11 @@ Estimated Workshop Time: 30 min
     ![](livelabs/provision-adb/images/atp-graph-provisioning.png)
     ![](livelabs/provision-adb/images/atp-graph-available.png)
 
+<<<<<<< HEAD
 # Deploy Graph Server and Client Marketplace Image
+=======
+# Deploy Graph Server Marketplace Image
+>>>>>>> 089ef1fafa542bfbb2de7650f0783dabfc276dd7
 
 ## **STEP 1:** Launch Graph Server and Client in the Oracle Cloud Marketplace
 
@@ -278,7 +282,11 @@ atpgraph_low =
 
 Note the address name, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
 
+<<<<<<< HEAD
 # Create Database Roles and User
+=======
+# Create Database User
+>>>>>>> 089ef1fafa542bfbb2de7650f0783dabfc276dd7
 
 ## **STEP 1:** Login as the ADMIN user
 
