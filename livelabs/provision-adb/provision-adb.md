@@ -1,14 +1,12 @@
-# Provision Autonomous Database Shared Free Tier Instance
+# Provision Autonomous Database Shared Instance
 
 ## Introduction
 
-This lab walks you through the steps to get started using the Oracle Autonomous Database (Autonomous Data Warehouse [ADW] and Autonomous Transaction Processing [ATP]) on Oracle Cloud. You will provision a new ATP instance using the cloud console.
+This lab walks you through the steps to get started using the Oracle Autonomous Database on Oracle Cloud. You will provision a new ATP (= Autonomous Transaction Processing) instance using the cloud console, while the steps are identical with an ADW (= Autonomous Data Warehouse) instance.*
 
-*Note1: While this lab uses ATP, the steps are identical for creating and connecting to an ADW database.*
+*Note: If you want to create an Always Free autonomous database, you need to be in a region where Always Free Resources are available. (Not all regions have Always Free Resources)*
 
-*Note2: If you want to create an Always Free autonomous database, you need to be in a region where Always Free Resources are available. (Not all regions have Always Free Resources)*
-
-Estimated time: 5 minutes
+Estimated time: 10 minutes
 
 Watch a video demonstration of provisioning an autonomous database in Autonomous Transaction Processing (same steps apply to provisioning an autonomous database in Autonomous Data Warehouse):
 
@@ -16,11 +14,11 @@ Watch a video demonstration of provisioning an autonomous database in Autonomous
 
 ### Objectives
 
--   Learn how to provision a new free tier Autonomous Transaction Processing instance
+- Learn how to provision a new ATP instance
 
 ### Prerequisites
 
-* An [Oracle Cloud Account](https://www.oracle.com/cloud/free/). You may use your own cloud account, a cloud account that you obtained through a trial, a Free Tier account, or a training account whose details were given to you by an Oracle instructor.
+- A VCN and Subnet
 
 ## **STEP 1**: Choose ATP from the Services Menu
 
@@ -28,23 +26,19 @@ Watch a video demonstration of provisioning an autonomous database in Autonomous
 
 2. Once you are logged in, you are taken to the cloud services dashboard where you can see all the services available to you. Click the navigation menu in the upper left to show top level navigation choices.
 
-    **Note:** You can also directly access your Autonomous Data Warehouse or Autonomous Transaction Processing service in the **Quick Actions** section of the dashboard.
-
     ![](images/Picture100-36.png)
 
 3. The following steps apply similarly to either Autonomous Data Warehouse or Autonomous Transaction Processing. This lab shows provisioning of an Autonomous Transaction Processing (ATP) database, so click **Autonomous Transaction Processing**.
 
     ![](images/select_ATP.png)
 
-4. Make sure your Workload Type is **Transaction Processing** or **All** to see your Autonomous Transaction Processing instances. You can use the **List Scope** drop-down menu to select a Compartment. Select your **root compartment**, or **another compartment of your choice** where you will create your new ATP instance. If you want to create a new compartment or learn more about them, click [here](https://docs.cloud.oracle.com/iaas/Content/Identity/Tasks/managingcompartments.htm#three).
+4. You can use the **List Scope** drop-down menu to select a Compartment. Select your **root compartment**, or **another compartment of your choice** where you will create your new ATP instance. If you want to create a new compartment or learn more about them, click [here](https://docs.cloud.oracle.com/iaas/Content/Identity/Tasks/managingcompartments.htm#three).
 
-    ***Note** - Avoid the use of the ManagedCompartmentforPaaS compartment as this is an Oracle default used for Oracle Platform Services.*
-
-5. This console shows that no databases yet exist. If there were a long list of databases, you could filter the list by the **State** of the databases (Available, Stopped, Terminated, and so on). You can also sort by **Workload Type**. Here, the **Transaction Processing** workload type is selected.
+    Note: Avoid the use of the ManagedCompartmentforPaaS compartment as this is an Oracle default used for Oracle Platform Services.
 
     ![](images/Compartment.png)
 
-6. You can see your current default **region** in the top, right hand corner of the page. You can select a different region. If you want to create an Always Free ADB, go ahead and select a region where Always Free Resources are available.
+5. You can see your current default **region** in the top, right hand corner of the page. You can select a different region. If you want to create an Always Free ADB, go ahead and select a region where Always Free Resources are available.
 
     ![](images/Region.jpg)
 
@@ -60,7 +54,7 @@ Watch a video demonstration of provisioning an autonomous database in Autonomous
 
     - **Choose a compartment** - Select a compartment for the database from the drop-down list.
     - **Display Name** - Enter a memorable name for the database for display purposes. For this lab, use **ATP Graph**.
-    - **Database Name** - Use letters and numbers only, starting with a letter. Maximum length is 14 characters. (Underscores not initially supported.) For this lab, use **ATPGRAPH**.
+    - **Database Name** - Use letters and numbers only, starting with a letter. Maximum length is 14 characters. For this lab, use **ATPGRAPH**.
 
 4. Choose a workload type. Select the workload type for your database from the choices:
 
@@ -79,7 +73,7 @@ Watch a video demonstration of provisioning an autonomous database in Autonomous
 6. Configure the database, select the **Always Free** option:
 
     - **Always Free** - For this lab, you can select this option to create an always free autonomous database, or not select this option and create a database using your paid subscription. An always free database comes with 1 CPU and 20 GB of storage. Selecting Always Free will suffice for this lab.
-    - **Choose database version** - Select a database version from the available versions.
+    - **Choose database version** - Select a database version from the available versions. Both 19c and 21c are supported for using properth graph feature.
     - **OCPU Count** - Number of CPUs for your service. For this lab, choose an always free database, which comes with 1 CPU.
     - **Storage (TB)** - Select your storage capacity in terabytes. For this lab, specify **1 TB** of storage. Or, if you choose an always free database, it comes with 20 GB of storage.
     - **Auto scaling** - For this lab, keep auto scaling should be **disabled**.
@@ -99,12 +93,9 @@ Watch a video demonstration of provisioning an autonomous database in Autonomous
 
     ![](images/Picture100-26d.png)
 
-8. Choose network access:
-    - For this lab, accept the default, "Allow secure access from everywhere".
-    - If you want a private endpoint, to allow traffic only from the VCN you specify - where access to the database from all public IPs or VCNs is blocked, then select "Virtual cloud network" in the Choose network access area.
-    - You can control and restrict access to your Autonomous Database by setting network access control lists (ACLs). You can select from 4 IP notation types: IP Address, CIDR Block, Virtual Cloud Network, Virtual Cloud Network OCID.
+8. Choose network access. For this lab, accept the default, **Allow secure access from specified IPs and VCN**:
 
-    ![](images/Picture100-26e.png)
+    ![](images/network.jpg)
 
 9. Choose a license type. For this lab, choose **License Included**. The two license types are:
 
@@ -115,7 +106,7 @@ Watch a video demonstration of provisioning an autonomous database in Autonomous
 
     ![](images/Picture100-27.png)
 
-11.  Your instance will begin provisioning. In a few minutes the state will turn from Provisioning to Available. At this point, your Autonomous Transaction Processing database is ready to use! Have a look at your instance's details here including its Name, Database Version, OCPU Count and Storage size.
+11.  Your instance will begin provisioning. In a few minutes the state will turn from Provisioning to Available. At this point, your Autonomous Transaction Processing database is ready to use!
     ![](images/atp-graph-provisioning.png)
     ![](images/atp-graph-available.png)
 
@@ -127,7 +118,7 @@ Click [here](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-clo
 
 ## Acknowledgements
 
-- **Author** - Nilay Panchal, ADB Product Management
-- **Adapted for Cloud by** - Richard Green, Principal Developer, Database User Assistance
-- **Last Updated By/Date** - Arabella Yao, Product Manager Intern, Database Management, July 2020
+- **Author** - Nilay Panchal
+- **Contributors** - Richard Green, Arabella Yao
+- **Last Updated By/Date** - Ryota Yamanaka, April 2020
 

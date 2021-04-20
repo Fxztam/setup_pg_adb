@@ -1,10 +1,10 @@
-# Deploy the Graph Server & Client Marketplace Image
+# Deploy Graph Server and Client Marketplace Image
 
 ## Introduction
 
 This lab walks you through the steps to deploy and configure the Graph Server and Client kit on a compute instance via an Oracle Cloud Marketplace stack. You will need to provide the SSH key, VCN and Subnet information, and the JDBC URL for the ADB instance during the deployment process.
 
-Estimated time: 7 minutes
+Estimated time: 10 minutes
 
 ### Objectives
 
@@ -12,36 +12,33 @@ Estimated time: 7 minutes
 
 ### Prerequisites
 
-* A cloud account
-* SSH Keys to use for connecting to a compute instance
-* An ADB instance with the downloaded wallet
-* A VCN and Subnet
+- A VCN and Subnet
+- An ADB instance provisioned in the previous step
+- A SSH Key to use for connecting to a compute instance
 
-*Note 1: Some of the UIs may look a little different from the screenshots in the instructions.*
+## **STEP 1:** Launch Graph Server and Client in the Oracle Cloud Marketplace
 
-## **STEP 1:** Locate the Graph Server and Client in the Oracle Cloud Marketplace
-
-Oracle Cloud Marketplace is an online platform which offers Oracle and partner software as click-to-deploy solutions that
-are built to extend Oracle Cloud products and services.
-
-Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a fully automated end-to-end deployment of a partner solution on Oracle Cloud Infrastructure.
+Oracle Cloud Marketplace is an online platform which offers Oracle and partner software as click-to-deploy solutions that are built to extend Oracle Cloud products and services. Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a fully automated end-to-end deployment of a partner solution on Oracle Cloud Infrastructure.
 
 1. Go to your Cloud Console. Navigate to the **Marketplace** tab and enter "Graph Server and Client" in the serach bar. Click on the Oracle Graph Server and Client stack.
 
-    ![](images/OCIMarketplaceFindGraphServer.jpg)
+    ![](images/search_image.jpg)
 
 2. Select the stack and then review the System Requirements and Usage Instructions. Then select the latest version and choose a compartment and click on `Launch Stack`.
 
-    ![](images/GSC211LaunchStack.jpg)
+    ![](images/launch_stack.jpg)
 
 3. Most of the defaults are perfect for our purposes. However, you will need to choose, or provide the following:
-    - Select a VM shape. Choose an Always Free eligible shape (i.e. `VM.Standard.E2.1.Micro`).
+
+    - Select a VM shape. You can choose an Always Free eligible shape (i.e. `VM.Standard.E2.1.Micro`).
     - Paste your public SSH key. This is used when you ssh into the provisioned compute later.
     - Choose an existing virtual cloud network.
     - Select a subnet compartment and subnet.
-    - Enter the JDBC URL for the ADB instance. The TNS_ADMIN entry points to the directory where you will have uploaded and unzipped the wallet, e.g. `jdbc:oracle:thin:@atpgraph_low?TNS_ADMIN=/etc/oracle/graph/wallets`
+    - Enter the JDBC URL for the ADB instance. The TNS_ADMIN entry points to the directory where you will have uploaded and unzipped the wallet, e.g.
+    `jdbc:oracle:thin:@atpgraph_low?TNS_ADMIN=/etc/oracle/graph/wallets`
+    - PGQL Engine for GraphViz: Choose **PGQL-on-PGX** for this lab.
 
-    ***Note: This JDBC URL is stored in a configuration which can be updated later if necessary.***
+    Note: This JDBC URL is stored in a configuration file (`pgx.conf`) which can be updated later if necessary.
 
     ![](images/ConfigureStackVariables_211_1.jpg)
     ![](images/ConfigureStackVariables_211_2.jpg)
@@ -58,7 +55,7 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
 
     ![](images/RMJobCompleted_211.jpg)
 
-    ***NOTE:*** *On completion please make a note of `public_ip` and `graphviz_public_url`, so that you can SSH into the running instance and access the graph viz later in this lab.*
+    **NOTE:** On completion please make a note of `public_ip` and `graphviz_public_url`, so that you can SSH into the running instance and access the graph viz later in this lab.
 
 5. The next set of steps are post-install setup and configuration on the newly created compute where the Graph Server was deployed.
 
@@ -86,24 +83,19 @@ Oracle Cloud Marketplace stacks are a set of Terraform templates that provide a 
     - **Destination Port Range:** 7007
     - Click on **Add Ingress Rules** at the bottom.
 
-    ![Add Ingress Rule](images/ingress_rule_7007.jpg)
+    ![](images/ingress_rule_7007.jpg)
 
-7. To connect to the instance, go the environment where you generated your SSH Key. You can use `Oracle Cloud Shell`, `Terminal` if you are using MAC, or `Gitbash` if you are using Windows. On your terminal or gitbash enter the following command:
+7. To connect to the instance, go the environment where you generated your SSH Key. On your terminal enter the following command:
 
     **Note:** For Oracle Linux VMs, the default username is `opc`
 
-    If your SSH Keys are kept under `HOME/.ssh/` directory, run:
     ```
-    <copy>ssh opc@<public_ip_address></copy>
-    ```
-
-    If you have a different path for your SSH key, enter the following:
-
-    ```
-    <copy>ssh -i <path_to_private_ssh_key> opc@<public_ip_address></copy>
+    <copy>
+    ssh -i <private_key> opc@<public_ip_address>
+    </copy>
     ```
 
-## **STEP 2:** Upload ADB Wallet, Configure your Compute Instance.
+## **STEP 2:** Download ADB Wallet
 
 The steps are as follows:
 
@@ -131,13 +123,14 @@ In Database Connection window, select **Instance Wallet** as your Wallet Type, c
 In the Download Wallet dialog, enter a wallet password in the Password field and confirm the password in the Confirm Password field. The password must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character. This password protects the downloaded Client Credentials wallet.
 
 Click **Download** to save the client security credentials zip file.
+
 ![](images/password.jpg)
 
 By default the filename is `Wallet_<DATABASE_NAME>.zip` e.g. `Wallet_ATPGRAPH.zip`. You must protect this file to prevent unauthorized database access.
 
 Content in this section is adapted from [Download Client Credentials (Wallets)](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/connect-download-wallet.html#GUID-B06202D2-0597-41AA-9481-3B174F75D4B1)
 
-## **STEP 3:**  Copy ADB Wallet to the Linux Compute
+## **STEP 3:** Copy ADB Wallet to the Compute
 
 On your desktop or laptop, we'll assume the ADB wallet was downloaded to ~/Downloads.
 
@@ -167,7 +160,7 @@ Example:
 scp -i key.pem opc@203.0.113.14
 ```
 
-Unzip the ADB wallet to the `/etc/oracle/graph/wallets/` directory.
+Unzip the ADB wallet to the `/etc/oracle/graph/wallets/` directory, and give the `oraclegraph` user access to the ADB wallet.
 
 ```
 <copy>
@@ -177,12 +170,12 @@ chgrp oraclegraph *
 </copy>
 ```
 
-The above is just one way of achieving the desired result, i.e. giving the `oraclegraph` user access to the ADB wallet. There are alternative methods.
-
 Check that you used the right service name in the JDBC URL you entered when configuring the OCI stack. It can be updated if necessary.
 
 ```
-<copy>cat /etc/oracle/graph/wallets/tnsnames.ora</copy>
+<copy>
+cat /etc/oracle/graph/wallets/tnsnames.ora
+</copy>
 ```
 
 You will see something similar to:
@@ -211,7 +204,7 @@ An entry in tnsnames.ora is of the form:
 )
 ```
 
-Note the `addressname`, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
+Note the address name, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
 
 You may now proceed to the next lab.
 

@@ -6,11 +6,11 @@ The labs in this workshop walk you through the steps to deploy the Graph Server 
 
 Estimated Workshop Time: 30 min
 
-- Setup ADB instance
-- Deploy the Graph Server and Client Marketplace Image
-- Create and Enable a Database User
+- [Provision Autonomous Database Shared Instance](#Provision-Autonomous-Database-Shared-Instance)
+- [Deploy Graph Server and Client Marketplace Image](#Deploy-Graph-Server-and-Client-Marketplace-Image)
+- [Create Database Roles and User](#Create-Database-Roles-and-User)
 
-# Setup ADB instance
+# Provision Autonomous Database Shared Instance
 
 ## **STEP 1**: Choose ATP from the Services Menu
 
@@ -18,31 +18,27 @@ Estimated Workshop Time: 30 min
 
 2. Once you are logged in, you are taken to the cloud services dashboard where you can see all the services available to you. Click the navigation menu in the upper left to show top level navigation choices.
 
-    **Note:** You can also directly access your Autonomous Data Warehouse or Autonomous Transaction Processing service in the **Quick Actions** section of the dashboard.
-
-    ![](livelabs/provision-free-tier-adb/images/Picture100-36.png)
+    ![](livelabs/provision-adb/images/Picture100-36.png)
 
 3. The following steps apply similarly to either Autonomous Data Warehouse or Autonomous Transaction Processing. This lab shows provisioning of an Autonomous Transaction Processing (ATP) database, so click **Autonomous Transaction Processing**.
 
-    ![](livelabs/provision-free-tier-adb/images/select_ATP.png)
+    ![](livelabs/provision-adb/images/select_ATP.png)
 
-4. Make sure your Workload Type is **Transaction Processing** or **All** to see your Autonomous Transaction Processing instances. You can use the **List Scope** drop-down menu to select a Compartment. Select your **root compartment**, or **another compartment of your choice** where you will create your new ATP instance. If you want to create a new compartment or learn more about them, click [here](https://docs.cloud.oracle.com/iaas/Content/Identity/Tasks/managingcompartments.htm#three).
+4. You can use the **List Scope** drop-down menu to select a Compartment. Select your **root compartment**, or **another compartment of your choice** where you will create your new ATP instance. If you want to create a new compartment or learn more about them, click [here](https://docs.cloud.oracle.com/iaas/Content/Identity/Tasks/managingcompartments.htm#three).
 
-    **Note:** Avoid the use of the ManagedCompartmentforPaaS compartment as this is an Oracle default used for Oracle Platform Services.
+    Note: Avoid the use of the ManagedCompartmentforPaaS compartment as this is an Oracle default used for Oracle Platform Services.
 
-5. This console shows that no databases yet exist. If there were a long list of databases, you could filter the list by the **State** of the databases (Available, Stopped, Terminated, and so on). You can also sort by **Workload Type**. Here, the **Transaction Processing** workload type is selected.
+    ![](livelabs/provision-adb/images/Compartment.png)
 
-    ![](livelabs/provision-free-tier-adb/images/Compartment.png)
+5. You can see your current default **region** in the top, right hand corner of the page. You can select a different region. If you want to create an Always Free ADB, go ahead and select a region where Always Free Resources are available.
 
-6. You can see your current default **region** in the top, right hand corner of the page. You can select a different region. If you want to create an Always Free ADB, go ahead and select a region where Always Free Resources are available.
-
-    ![](livelabs/provision-free-tier-adb/images/Region.jpg)
+    ![](livelabs/provision-adb/images/Region.jpg)
 
 ## **STEP 2**: Creating the ADB instance
 
 1. Click **Create Autonomous Database** to start the instance creation process.
 
-    ![](livelabs/provision-free-tier-adb/images/create_adb.jpg)
+    ![](livelabs/provision-adb/images/create_adb.jpg)
 
 2. This brings up the **Create Autonomous Database** screen where you will specify the configuration of the instance.
 
@@ -57,25 +53,25 @@ Estimated Workshop Time: 30 min
     - **Transaction Processing** - For this lab, choose **Transaction Processing** as the workload type.
     - **Data Warehouse** - Alternately, you could have chosen Data Warehouse as the workload type.
 
-    ![](livelabs/provision-free-tier-adb/images/basic_info_workload_type.jpg)
+    ![](livelabs/provision-adb/images/basic_info_workload_type.jpg)
 
 5. Choose a deployment type. Select the deployment type for your database from the choices:
 
     - **Shared Infrastructure** - For this lab, choose **Shared Infrastructure** as the deployment type.
     - **Dedicated Infrastructure** - Alternately, you could have chosen Dedicated Infrastructure as the workload type.
 
-    ![](livelabs/provision-free-tier-adb/images/Picture100-26_deployment_type.png)
+    ![](livelabs/provision-adb/images/Picture100-26_deployment_type.png)
 
 6. Configure the database, select the **Always Free** option:
 
     - **Always Free** - For this lab, you can select this option to create an always free autonomous database, or not select this option and create a database using your paid subscription. An always free database comes with 1 CPU and 20 GB of storage. Selecting Always Free will suffice for this lab.
-    - **Choose database version** - Select a database version from the available versions.
+    - **Choose database version** - Select a database version from the available versions. Both 19c and 21c are supported for using properth graph feature.
     - **OCPU Count** - Number of CPUs for your service. For this lab, choose an always free database, which comes with 1 CPU.
     - **Storage (TB)** - Select your storage capacity in terabytes. For this lab, specify **1 TB** of storage. Or, if you choose an always free database, it comes with 20 GB of storage.
     - **Auto scaling** - For this lab, keep auto scaling should be **disabled**.
     - **New Database Preview** - If a checkbox is available to preview a new database version, do **not** select it.
 
-    ![](livelabs/provision-free-tier-adb/images/atp-choose-cpu-storage.jpg)
+    ![](livelabs/provision-adb/images/atp-choose-cpu-storage.jpg)
 
 7. Create administrator credentials:
 
@@ -87,14 +83,11 @@ Estimated Workshop Time: 30 min
     - The password must not be the same password that is set less than 24 hours ago.
     - Re-enter the password to confirm it. Make a note of this password.
 
-    ![](livelabs/provision-free-tier-adb/images/Picture100-26d.png)
+    ![](livelabs/provision-adb/images/Picture100-26d.png)
 
-8. Choose network access:
-    - For this lab, accept the default, "Allow secure access from everywhere".
-    - If you want a private endpoint, to allow traffic only from the VCN you specify - where access to the database from all public IPs or VCNs is blocked, then select "Virtual cloud network" in the Choose network access area.
-    - You can control and restrict access to your Autonomous Database by setting network access control lists (ACLs). You can select from 4 IP notation types: IP Address, CIDR Block, Virtual Cloud Network, Virtual Cloud Network OCID.
+8. Choose network access. For this lab, accept the default, **Allow secure access from specified IPs and VCN**:
 
-    ![](livelabs/provision-free-tier-adb/images/Picture100-26e.png)
+    ![](livelabs/provision-adb/images/network.jpg)
 
 9. Choose a license type. For this lab, choose **License Included**. The two license types are:
 
@@ -103,13 +96,13 @@ Estimated Workshop Time: 30 min
 
 10. Click **Create Autonomous Database**.
 
-    ![](livelabs/provision-free-tier-adb/images/Picture100-27.png)
+    ![](livelabs/provision-adb/images/Picture100-27.png)
 
-11.  Your instance will begin provisioning. In a few minutes the state will turn from Provisioning to Available. At this point, your Autonomous Transaction Processing database is ready to use! Have a look at your instance's details here including its Name, Database Version, OCPU Count and Storage size.
-    ![](livelabs/provision-free-tier-adb/images/atp-graph-provisioning.png)
-    ![](livelabs/provision-free-tier-adb/images/atp-graph-available.png)
+11.  Your instance will begin provisioning. In a few minutes the state will turn from Provisioning to Available. At this point, your Autonomous Transaction Processing database is ready to use!
+    ![](livelabs/provision-adb/images/atp-graph-provisioning.png)
+    ![](livelabs/provision-adb/images/atp-graph-available.png)
 
-# Deploy the Graph Server and Client Marketplace Image
+# Deploy Graph Server and Client Marketplace Image
 
 ## **STEP 1:** Launch Graph Server and Client in the Oracle Cloud Marketplace
 
@@ -117,11 +110,11 @@ Oracle Cloud Marketplace is an online platform which offers Oracle and partner s
 
 1. Go to your Cloud Console. Navigate to the **Marketplace** tab and enter "graph server and client" in the serach bar. Click on the Oracle Graph Server and Client stack.
 
-    ![](livelabs/deploy-image/images/OCIMarketplaceFindGraphServer.jpg)
+    ![](livelabs/deploy-image/images/search_image.jpg)
 
 2. Select the stack and then review the System Requirements and Usage Instructions. Then select the latest version and choose a compartment and click on `Launch Stack`.
 
-    ![](livelabs/deploy-image/images/GSC211LaunchStack.jpg)
+    ![](livelabs/deploy-image/images/launch_stack.jpg)
 
 3. Most of the defaults are perfect for our purposes. However, you will need to choose, or provide the following:
 
@@ -129,9 +122,11 @@ Oracle Cloud Marketplace is an online platform which offers Oracle and partner s
     - Paste your public SSH key. This is used when you ssh into the provisioned compute later.
     - Choose an existing virtual cloud network.
     - Select a subnet compartment and subnet.
-    - Enter the JDBC URL for the ADB instance. The TNS_ADMIN entry points to the directory where you will have uploaded and unzipped the wallet, e.g. `jdbc:oracle:thin:@atpgraph_low?TNS_ADMIN=/etc/oracle/graph/wallets`
+    - Enter the JDBC URL for the ADB instance. The TNS_ADMIN entry points to the directory where you will have uploaded and unzipped the wallet, e.g. 
+    `jdbc:oracle:thin:@atpgraph_low?TNS_ADMIN=/etc/oracle/graph/wallets`
+    - PGQL Engine for GraphViz: Choose **PGQL-on-PGX** for this lab.
 
-    **Note:** This JDBC URL is stored in a configuration file (`pgx.conf`) which can be updated later if necessary.
+    Note: This JDBC URL is stored in a configuration file (`pgx.conf`) which can be updated later if necessary.
 
     ![](livelabs/deploy-image/images/ConfigureStackVariables_211_1.jpg)
     ![](livelabs/deploy-image/images/ConfigureStackVariables_211_2.jpg)
@@ -223,7 +218,7 @@ By default the filename is `Wallet_<DATABASE_NAME>.zip` e.g. `Wallet_ATPGRAPH.zi
 
 Content in this section is adapted from [Download Client Credentials (Wallets)](https://docs.oracle.com/en/cloud/paas/autonomous-data-warehouse-cloud/user/connect-download-wallet.html#GUID-B06202D2-0597-41AA-9481-3B174F75D4B1)
 
-## **STEP 3:**  Copy ADB Wallet to the Linux Compute
+## **STEP 3:**  Copy ADB Wallet to the Compute
 
 On your desktop or laptop, we'll assume the ADB wallet was downloaded to ~/Downloads.
 
@@ -253,15 +248,13 @@ Example:
 ssh -i key.pem opc@203.0.113.14
 ```
 
-Unzip the ADB wallet to the `/etc/oracle/graph/wallets/` directory.
+Unzip the ADB wallet to the `/etc/oracle/graph/wallets/` directory, and give the `oraclegraph` user access to the ADB wallet.
 
 ```
 cd /etc/oracle/graph/wallets/
 unzip Wallet_ATPGRAPH.zip
 chgrp oraclegraph *
 ```
-
-The above is just one way of achieving the desired result, i.e. giving the `oraclegraph` user access to the ADB wallet. There are alternative methods.
 
 Check that you used the right service name in the JDBC URL you entered when configuring the OCI stack. It can be updated if necessary.
 
@@ -285,7 +278,7 @@ atpgraph_low =
 
 Note the address name, e.g. `atpgraph_low` is used when connecting to the databases using JDBC.
 
-# Create and Enable a Database User
+# Create Database Roles and User
 
 ## **STEP 1:** Login as the ADMIN user
 

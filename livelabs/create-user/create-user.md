@@ -1,22 +1,22 @@
-# Create and Enable a Database User
+# Create Database Roles and User
 
 ## Introduction
 
 This lab walks you through the steps to get started with SQL Developer Web. You will learn how to create a user in SQL Developer Web and provide that user the access to SQL Developer Web.
 
-Estimated time: 3 minutes
+Estimated time: 10 minutes
 
 ### Objectives
 
-- Learn how to setup the required database roles in SQL Developer Web.
-- Learn how to create a database user in SQL Developer Web.
+- Learn how to setup the required database roles
+- Learn how to create a database user
 
 ### Prerequisites
 
-* Oracle cloud account
-* Provisioned Autonomous Database Shared Instance
+- An ADB instance provisioned in the previous step
+- A Graph Server instance provisioned in the previous step
 
-## **STEP 1:** Create database roles
+## **STEP 1:** Login to SQL Developer Web
 
 Login as the Admin user in SQL Developer Web of the newly created ADB instance.
 
@@ -36,7 +36,7 @@ Enter `ADMIN` as Username and go next.
 
 ![](images/login-1.jpg)
 
-Input the password (you set up at Lab 2 Step 2, Section 7) and sign in.
+Input the password (you set up at Lab 2 S tep 2, Section 7) and sign in.
 
 ![](images/login-2.jpg)
 
@@ -108,7 +108,7 @@ GRANT PGX_SESSION_READ_MODEL TO GRAPH_DEVELOPER;
 
 ## **STEP 3:** Create a database user
 
-Now create the `CUSTOMER_360` user. Enter the following commands into the SQL Worksheet and run it while connected as the Admin user.
+Now create the `GRAPH_DEV` user. Enter the following commands into the SQL Worksheet and run it while connected as the Admin user.
 
 Note: Replace **<specify_a_password>** with a valid password string.
 
@@ -122,7 +122,7 @@ QUOTA UNLIMITED ON data;
 
 GRANT create session, create table, create view TO graph_dev;
 -- The following additional privileges are necessary for two-tier architecture (= PGQL-on-RDBMS)
--- GRANT ALTER SESSION, CREATE PROCEDURE, CREATE TYPE, CREATE SEQUENCE, CREATE TRIGGER TO customer_360;
+-- GRANT ALTER SESSION, CREATE PROCEDURE, CREATE TYPE, CREATE SEQUENCE, CREATE TRIGGER TO graph_dev;
 
 GRANT graph_developer TO graph_dev;
 </copy>
@@ -131,8 +131,8 @@ GRANT graph_developer TO graph_dev;
 ![](images/create_user.jpg)
 
 Notes: 
-- The `IDENTIFIED BY` clause specifies the password (i.e whatever you replaced <specify_a_password> with)
-- The Graph Server uses database authentication ([details](https://docs.oracle.com/en/database/oracle/oracle-database/20/spgdg/using-inmemory-analyst-oracle-database.html)). The user needs at least the graph_developer role.
+- The `IDENTIFIED BY` clause specifies the password.
+- The Graph Server uses database authentication. The user needs at least the graph_developer role.
 
 ## **STEP 4:** Connect to Graph Server
 

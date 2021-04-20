@@ -17,12 +17,13 @@ Watch a short video that explains key features in Oracle Graph:
 ### Objectives
 
 In this workshop you will:
-- Provision an ADB Shared instance.
-- Deploy the Graph Server and Client Marketplace image.
+- Provision an Autonomous Database shared instance
+- Deploy the Graph Server and Client Marketplace image
+- Create database roles and a user
 
 ### Prerequisites
 
-- This workshop requires an Oracle Cloud account. You may use your own cloud account, a cloud account that you obtained through a trial, a Free Tier account, or a training account whose details were given to you by an Oracle instructor.
+* This workshop requires an [Oracle Cloud account](https://www.oracle.com/cloud/free/). You may use your own cloud account, a cloud account that you obtained through a trial, a Free Tier account, or a training account whose details were given to you by an Oracle instructor.
 
 ## Acknowledgements
 

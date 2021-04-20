@@ -1,7 +1,7 @@
 {
-    "workshoptitle":"Setup Graph Server with Autonomous Database",
+    "workshoptitle": "Setup Graph Server with Autonomous Database",
     "help": "livelabs-help-db_us@oracle.com",
-	"tutorials": [
+    "tutorials": [
         {
             "title": "Getting Started",
             "description": "Register for a Free Tier account",
@@ -10,32 +10,32 @@
         {
             "title": "Introduction",
             "description": "Introduction",
-            "filename":"../../intro/intro.md"
+            "filename": "../../intro/intro.md"
         },
         {
             "title": "Lab 1: Create SSH Keys",
-            "description":"Create SSH Keys",
-            "filename":"https://raw.githubusercontent.com/oracle/learning-library/master/common/labs/generate-ssh-key/generate-ssh-keys.md"
+            "description": "Create SSH Keys",
+            "filename": "https://raw.githubusercontent.com/oracle/learning-library/master/common/labs/generate-ssh-key/generate-ssh-keys.md"
         },
         {
-            "title": "Lab 2: Provision Autonomous Database Shared Free Tier Instance",
-            "description":"Setup an Always Free autonomous database instance",
-            "filename":"../../provision-free-tier-adb/provision-free-tier-adb.md"
+            "title": "Lab 2: Provision Autonomous Database Shared Instance",
+            "description": "Provision Autonomous Database Shared Instance",
+            "filename": "../../provision-adb/provision-adb.md"
         },
         {
-            "title": "Lab 3: Deploy the Graph Server & Client Marketplace Image",
-            "description":"Deploy the Graph Server & Client Marketplace image",
-            "filename":"../../deploy-image/deploy-image.md"
+            "title": "Lab 3: Deploy Graph Server and Client Marketplace Image",
+            "description": "Deploy Graph Server and Client Marketplace Image",
+            "filename": "../../deploy-image/deploy-image.md"
         },
         {
-            "title": "Lab 4: Create and Enable a Graph User",
-            "description":"Create a user and enable SQLDeveloper Web for that user",
-            "filename":"../../create-graph-user/create-graph-user.md"
+            "title": "Lab 4: Create Database Roles and User",
+            "description": "Create Database Roles and User",
+            "filename": "../../create-user/create-user.md"
         },
         {
             "title": "Need Help?",
             "description": "Solutions to Common Problems and Directions for Receiving Live Help",
-            "filename":"https://raw.githubusercontent.com/oracle/learning-library/master/common/labs/need-help/need-help-livelabs.md"
+            "filename": "https://raw.githubusercontent.com/oracle/learning-library/master/common/labs/need-help/need-help-livelabs.md"
         }
     ]
 }
