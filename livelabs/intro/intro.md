@@ -4,6 +4,11 @@
 
 The labs in this workshop walk you through the steps to deploy the Graph Server and Client package with Autonomous Database (ADB) instance. You will provision a new ADB instance, and integrate with the Graph Server using its Marketplace image.
 
+Version:
+
+- Graph Server and Client: 20.4 or 21.2
+- Database: 21.2 or above
+
 Estimated Workshop Time: 30 min
 
 ### About Oracle's Property Graph?
@@ -12,7 +17,7 @@ The Property Graph feature of Oracle Database supports and consists of graph sto
 
 Watch a short video that explains key features in Oracle Graph:
 
-[](youtube:-DYVgYJPbQA)
+[Oracle's Graph Technologies - Brief Introduction](youtube:-DYVgYJPbQA)
 
 ### Objectives
 

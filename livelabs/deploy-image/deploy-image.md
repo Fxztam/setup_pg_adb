@@ -45,11 +45,11 @@ Oracle Cloud Marketplace is an online platform which offers Oracle and partner s
 
 4. Click `Next` to initiate the Resource Manager Job for the stack. The job will take 2-3 minutes to complete.
 
-    ![](images/ResourceMgrStackJobStart.png)
+    ![](images/apply_job_start.jpg)
 
     You'll see the progress in the log output.
 
-    ![](images/RMJobStarted_Sombrero203.png)
+    ![](images/apply_job_done.jpg)
 
     Once the job has successfully completed the status will change from "In Progess" to "Succeeded".
 

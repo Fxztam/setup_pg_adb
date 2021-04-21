@@ -1,14 +1,28 @@
 # Setup Graph Server with Autonomous Database
 
+- [Introduction](Introduction)
+- [Provision Autonomous Database Shared Instance](#Provision-Autonomous-Database-Shared-Instance)
+- [Deploy Graph Server and Client Marketplace Image](#Deploy-Graph-Server-and-Client-Marketplace-Image)
+- [Create Database Roles and User](#Create-Database-Roles-and-User)
+
 # Introduction
 
 The labs in this workshop walk you through the steps to deploy the Graph Server and Client package with Autonomous Database (ADB) instance. You will provision a new ADB instance, and integrate with the Graph Server using its Marketplace image.
 
+Version:
+
+- Graph Server and Client: 20.4 or 21.2
+- Database: 21.2 or above
+
 Estimated Workshop Time: 30 min
 
-- [Provision Autonomous Database Shared Instance](#Provision-Autonomous-Database-Shared-Instance)
-- [Deploy Graph Server and Client Marketplace Image](#Deploy-Graph-Server-and-Client-Marketplace-Image)
-- [Create Database Roles and User](#Create-Database-Roles-and-User)
+### About Oracle's Property Graph?
+
+The Property Graph feature of Oracle Database supports and consists of graph storage, indexing, and search; a powerful in-memory analyst with nearly 60 built-in, parallel analytic functions; a graph query language and developer APIs. Graph algorithms enable you to explore and discover relationships in social networks, IoT, big data, data warehouses and complex transaction data for applications such as fraud detection in banking, customer 360, and smart manufacturing.
+
+Watch a short video that explains key features in Oracle Graph:
+
+[Oracle's Graph Technologies - Brief Introduction](youtube:-DYVgYJPbQA)
 
 # Provision Autonomous Database Shared Instance
 
@@ -133,11 +147,11 @@ Oracle Cloud Marketplace is an online platform which offers Oracle and partner s
 
 4. Click `Next` to initiate the Resource Manager Job for the stack. The job will take 2-3 minutes to complete.
 
-    ![](livelabs/deploy-image/images/ResourceMgrStackJobStart.png)
+    ![](livelabs/deploy-image/images/apply_job_start.jpg)
 
     You'll see the progress in the log output.
 
-    ![](livelabs/deploy-image/images/RMJobStarted_Sombrero203.png)
+    ![](livelabs/deploy-image/images/apply_job_done.jpg)
 
     Once the job has successfully completed the status will change from "In Progess" to "Succeeded".
 
@@ -286,27 +300,27 @@ Login as the ADMIN user in SQL Developer Web of the newly created ADB instance.
 
 Go to your Cloud Console, click **Autonomous Transaction Processing**. Select the ADB instance `ATP Graph` you created in the previous section.
 
-![](livelabs/create-graph-user/images/select_ATP.png)
+![](livelabs/create-user/images/select_ATP.png)
 
 In Autonomous Database Details page, click **Service Console**. Make sure your brower allow pop-up windows.
 
-![](livelabs/create-graph-user/images/adb_console_1.jpg)
+![](livelabs/create-user/images/adb_console_1.jpg)
 
 Choose Development from the list on the left, then click the **Database Actions**.
 
-![](livelabs/create-graph-user/images/adb_console_2.jpg)
+![](livelabs/create-user/images/adb_console_2.jpg)
 
 Enter `ADMIN` as Username and go next.
 
-![](livelabs/create-graph-user/images/login-1.jpg)
+![](livelabs/create-user/images/login-1.jpg)
 
 Input the password (you set up at Lab 2 Step 2, Section 7) and sign in.
 
-![](livelabs/create-graph-user/images/login-2.jpg)
+![](livelabs/create-user/images/login-2.jpg)
 
 Logged in as the `ADMIN` user. 
 
-![](livelabs/create-graph-user/images/ADB_SQLDevWebHome.jpg)
+![](livelabs/create-user/images/ADB_SQLDevWebHome.jpg)
 
 ## **STEP 2:** Create the roles required
 
@@ -398,11 +412,11 @@ Open the GraphViz at `https://<public_ip_for_compute>:7007/ui`. Replace `<public
 
 You should see a screen similar to the screenshot below. Enter the username (`graph_dev`) and password you entered when createing the user in SQL Developer Web.
 
-![](livelabs/create-graph-user/images/graphviz_1.jpg)
+![](livelabs/create-user/images/graphviz_1.jpg)
 
 If you can login successfully, your Graph Server is properly connected to the database for authentication. Now, you will see that a sample graph called `hr` is already loaded. Try running the simple PGQL query shown by default against the graph.
 
-![](livelabs/create-graph-user/images/graphviz_2.jpg)
+![](livelabs/create-user/images/graphviz_2.jpg)
 
 Congraturation, your Graph Server is ready!
 
